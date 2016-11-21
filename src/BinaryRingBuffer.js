@@ -47,21 +47,6 @@ class BinaryRingBuffer {
     }
 
     writeBits(value, bits) {
-
-        // // todo this is dumb
-        // let minBits = 0;
-        // while (1 << minBits < value) {
-        //     minBits++;
-        // }
-
-        // if (bits === undefined) {
-        //     bits = minBits;
-        // }
-
-        // if (bits < minBits) {
-        //     console.warn('not enough bits!');
-        // }
-
         while (bits + this.size() > this.cap) {
             this.grow();
         }

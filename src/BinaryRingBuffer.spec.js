@@ -1,6 +1,6 @@
 const BinaryRingBuffer = require('./BinaryRingBuffer');
 
-describe('Binary Ring Buffer', function () {
+describe('Binary ring buffer reading and writing', function () {
     it('simple byte write and read', function () {
         let buf = new BinaryRingBuffer();
         let expected = [3, 95, 0, 255, 9, 64];
@@ -151,6 +151,30 @@ describe('Binary Ring Buffer', function () {
 
         // Note we lose precision here but not accuracy
         expect(buf.readBits(64)).toEqual(Math.pow(2, 64));
+    });
+});
+
+describe('Peak read', function () {
+    it('peak does not move', function () {
+        // write 0xFF00
+        let buf = new BinaryRingBuffer(2);
+        buf.writeBits(255, 8);
+        buf.writeBits(0, 8);
+
+        // Peak first 6 bits
+        expect(buf.peakBits(6)).toEqual(63);
+        let view = buf.viewArray();
+        expect(view.cursors).toEqual('R0000000,00000000');
+
+        // Read should have same result
+        expect(buf.readBits(6)).toEqual(63);
+        view = buf.viewArray();
+        expect(view.cursors).toEqual('W00000R0,00000000');
+
+        // now moved
+        expect(buf.peakBits(3)).toEqual(6);
+        view = buf.viewArray();
+        expect(view.cursors).toEqual('W00000R0,00000000');
     });
 });
 
