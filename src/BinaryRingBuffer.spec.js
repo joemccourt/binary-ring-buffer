@@ -154,6 +154,21 @@ describe('Binary ring buffer reading and writing', function () {
     });
 });
 
+describe('Buffer clear', function () {
+    it('does do not grow at all when clearing', function () {
+        buf = new BinaryRingBuffer(1);
+        let array = [];
+        for (let i = 0; i < 1000; i++) {
+            let d = Math.floor(Math.random() * 32);
+            buf.writeBits(d, 5);
+            expect(buf.size()).toEqual(5);
+            buf.clear();
+            expect(buf.size()).toEqual(0);
+            expect(buf.cap).toEqual(8);
+        }
+    });
+});
+
 describe('Peak read', function () {
     it('peak does not move', function () {
         // write 0xFF00
