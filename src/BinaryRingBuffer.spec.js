@@ -1,3 +1,5 @@
+'use strict';
+
 const BinaryRingBuffer = require('./BinaryRingBuffer');
 
 describe('Binary ring buffer reading and writing', function () {
@@ -156,7 +158,7 @@ describe('Binary ring buffer reading and writing', function () {
 
 describe('Buffer clear', function () {
     it('does do not grow at all when clearing', function () {
-        buf = new BinaryRingBuffer(1);
+        let buf = new BinaryRingBuffer(1);
         let array = [];
         for (let i = 0; i < 1000; i++) {
             let d = Math.floor(Math.random() * 32);

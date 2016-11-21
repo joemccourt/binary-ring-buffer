@@ -1,6 +1,6 @@
 {
   "name": "binary-ring-buffer",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Binary Ring Buffer abstraction on top of native ArrayBuffer",
   "main": "src/BinaryRingBuffer.js",
   "scripts": {

@@ -1,3 +1,5 @@
+'use strict';
+
 const byteToBitArray = (byte) => {
     let a = [];
     for (let i = 0; i < 8; i++) {
