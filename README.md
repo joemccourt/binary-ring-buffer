@@ -15,6 +15,7 @@ Abstraction over JS ArrayBuffer.  This provides and easy and efficient way to wr
 ### Example Write / Read individual bits
 
 ```
+const BinaryRingBuffer = require('binary-ring-buffer');
 let buf = new BinaryRingBuffer();
 buf.writeBits(1, 1); // 1
 buf.writeBits(0, 2); // 100
@@ -22,8 +23,11 @@ buf.writeBits(1, 1); // 1001
 console.log(buf.readBits(4)); // '9'
 ```
 
+## Installation
+`npm i binary-ring-buffer`
+
 ### TODO
  * Safety checks for input values
  * Clamp reading up to write position, returning padded zeros.
- * Make writBits accurate past 53 bits
+ * Make writeBits accurate past 53 bits
  * Add benchmarks

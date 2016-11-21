@@ -1,8 +1,8 @@
 {
   "name": "binary-ring-buffer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Binary Ring Buffer abstraction on top of native ArrayBuffer",
-  "main": "BinaryRingBuffer.js",
+  "main": "src/BinaryRingBuffer.js",
   "scripts": {
     "test": "jasmine-node src/BinaryRingBuffer.spec.js",
     "cover": "node_modules/istanbul/lib/cli.js cover jasmine-node src/BinaryRingBuffer.spec.js -x '**/*.spec.js'"
@@ -12,7 +12,11 @@
     "type": "git",
     "url": "https://github.com/joemccourt/binary-ring-buffer.git"
   },
-  "author": "= <=> (=)",
+  "author": {
+    "name": "Joe McCourt",
+    "email": "joe.j.mccourt@gmail.com",
+    "url": "http://josephmccourt.com"
+  },
   "license": "MIT",
   "devDependencies": {
     "coveralls": "^2.11.15",
