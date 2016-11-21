@@ -7,6 +7,11 @@
     "test": "jasmine-node src/BinaryRingBuffer.spec.js",
     "cover": "node_modules/istanbul/lib/cli.js cover jasmine-node src/BinaryRingBuffer.spec.js -x '**/*.spec.js'"
   },
+  "homepage": "https://github.com/joemccourt/binary-ring-buffer",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joemccourt/binary-ring-buffer.git"
+  },
   "author": "= <=> (=)",
   "license": "MIT",
   "devDependencies": {
