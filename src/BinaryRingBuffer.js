@@ -1,3 +1,11 @@
+const byteToBitArray = (byte) => {
+    let a = [];
+    for (let i = 0; i < 8; i++) {
+        a[8 - i - 1] = (byte & (1 << i)) > 0 ? 1 : 0;
+    }
+    return a;
+};
+
 class BinaryRingBuffer {
     constructor(n = 8) {
         this.a = new ArrayBuffer(n);
@@ -170,31 +178,24 @@ class BinaryRingBuffer {
         this.writeCursor = this.readCursor;
     }
 
-    byteToBitArray(byte) {
-        let a = [];
-        for (let i = 0; i < 8; i++) {
-            a[8 - i - 1] = (byte & (1 << i)) > 0 ? 1 : 0;
-        }
-        return a;
-    }
-
     // For debugging
     viewArray() {
         let view = new Uint8Array(this.a);
         let a = [];
         let c = [];
         for (let i = 0; i < this.cap / 8; i++) {
-            a.push(this.byteToBitArray(view[i]).join(''));
-            c.push(this.byteToBitArray(0));
+            a.push(byteToBitArray(view[i]).join(''));
+            c.push(byteToBitArray(0));
         }
 
         c[this.writeCursor/8|0][this.writeCursor%8] = 'W';
         c[this.readCursor/8|0][this.readCursor%8] = 'R';
         c = c.map(b => b.join(''));
 
-        console.log('\n');
-        console.log(a.join(','));
-        console.log(c.join(','));
+        return {
+            array: a.join(','),
+            cursors: c.join(',')
+        };
     }
 }
 

@@ -153,3 +153,21 @@ describe('Binary Ring Buffer', function () {
         expect(buf.readBits(64)).toEqual(Math.pow(2, 64));
     });
 });
+
+describe('View array helper', function () {
+    it('all ones in a single byte', function () {
+        let buf = new BinaryRingBuffer(1);
+        buf.writeBits(255, 8);
+        let view = buf.viewArray();
+        expect(view.array).toEqual('11111111');
+        expect(view.cursors).toEqual('R0000000');
+    });
+    it('multiple bytes and different R/W cursors', function () {
+        let buf = new BinaryRingBuffer(3);
+        buf.writeBits(1, 8);
+        buf.writeBits(1, 8);
+        let view = buf.viewArray();
+        expect(view.array).toEqual('00000001,00000001,00000000');
+        expect(view.cursors).toEqual('R0000000,00000000,W0000000');
+    });
+});
