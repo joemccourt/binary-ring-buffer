@@ -1,39 +1,40 @@
-'use strict';
+/* eslint-env jasmine */
+/* eslint-disable no-restricted-properties */
 
 const BinaryRingBuffer = require('./BinaryRingBuffer');
 
-describe('Binary ring buffer reading and writing', function () {
-    it('simple byte write and read', function () {
+describe('Binary ring buffer reading and writing', () => {
+    it('simple byte write and read', () => {
         let buf = new BinaryRingBuffer();
         let expected = [3, 95, 0, 255, 9, 64];
 
-        expected.forEach(v => {
+        expected.forEach((v) => {
             buf.writeBits(v, 8);
             expect(buf.readBits(8)).toEqual(v);
         });
     });
 
-    it('simple bits write and read', function () {
+    it('simple bits write and read', () => {
         let buf = new BinaryRingBuffer();
         let expected = [[3, 3], [1, 3], [250, 8], [1, 1], [63, 6], [7, 5], [3, 3]];
 
-        expected.forEach(v => {
+        expected.forEach((v) => {
             buf.writeBits(v[0], v[1]);
             expect(buf.readBits(v[1])).toEqual(v[0]);
         });
     });
 
-    it('larger than one byte write and read', function () {
+    it('larger than one byte write and read', () => {
         let buf = new BinaryRingBuffer();
         let expected = [[38, 6], [0, 2], [1023, 10], [255, 8], [0, 17], [10, 4], [256, 9]];
 
-        expected.forEach(v => {
+        expected.forEach((v) => {
             buf.writeBits(v[0], v[1]);
             expect(buf.readBits(v[1])).toEqual(v[0]);
         });
     });
 
-    it('read multiple writes', function () {
+    it('read multiple writes', () => {
         let buf = new BinaryRingBuffer();
         buf.writeBits(1, 1);
         buf.writeBits(0, 1);
@@ -51,7 +52,7 @@ describe('Binary ring buffer reading and writing', function () {
         expect(buf.readBits(12)).toEqual(255);
     });
 
-    it('read over multiple full bytes', function () {
+    it('read over multiple full bytes', () => {
         let buf = new BinaryRingBuffer();
         buf.writeBits(6, 3);
         buf.readBits(3);
@@ -60,7 +61,7 @@ describe('Binary ring buffer reading and writing', function () {
         expect(buf.readBits(30)).toEqual((1 << 30) - 1);
     });
 
-    it('capacity is the same after many reads and writes', function () {
+    it('capacity is the same after many reads and writes', () => {
         let buf = new BinaryRingBuffer();
         let cap0 = buf.cap;
         let bitsPerOp = 3;
@@ -75,7 +76,7 @@ describe('Binary ring buffer reading and writing', function () {
         expect(buf.cap).toEqual(cap0);
     });
 
-    it('safety edge cases', function () {
+    it('safety edge cases', () => {
         let buf = new BinaryRingBuffer(1);
         buf.writeBits(255, 8);
         buf.writeBits(255, -4);
@@ -84,7 +85,7 @@ describe('Binary ring buffer reading and writing', function () {
         expect(buf.readBits(1324)).toEqual(3);
     });
 
-    it('wrap around does not alter written values', function () {
+    it('wrap around does not alter written values', () => {
         let buf = new BinaryRingBuffer(1);
         buf.writeBits(0, 2);
         buf.readBits(2);
@@ -97,7 +98,7 @@ describe('Binary ring buffer reading and writing', function () {
         expect(buf.readBits(6)).toEqual(45);
     });
 
-    it('can dynamically increase size', function () {
+    it('can dynamically increase size', () => {
         let buf = new BinaryRingBuffer(1);
         buf.writeBits(0, 8 * 1024);
 
@@ -125,7 +126,7 @@ describe('Binary ring buffer reading and writing', function () {
         }
     });
 
-    it('read 16 bit int', function () {
+    it('read 16 bit int', () => {
         let buf = new BinaryRingBuffer();
         buf.writeBits(0, 3);
         buf.readBits(3);
@@ -135,7 +136,7 @@ describe('Binary ring buffer reading and writing', function () {
     });
 
 
-    it('read 32 bit int', function () {
+    it('read 32 bit int', () => {
         let buf = new BinaryRingBuffer();
         buf.writeBits(0, 3);
         buf.readBits(3);
@@ -144,7 +145,7 @@ describe('Binary ring buffer reading and writing', function () {
         expect(buf.readBits(32)).toEqual(Math.pow(2, 32) - 1);
     });
 
-    it('read 64 bit int', function () {
+    it('read 64 bit int', () => {
         let buf = new BinaryRingBuffer();
         buf.writeBits(0, 5);
         buf.readBits(5);
@@ -165,10 +166,9 @@ describe('Binary ring buffer reading and writing', function () {
     });
 });
 
-describe('Buffer clear', function () {
-    it('does do not grow at all when clearing', function () {
+describe('Buffer clear', () => {
+    it('does do not grow at all when clearing', () => {
         let buf = new BinaryRingBuffer(1);
-        let array = [];
         for (let i = 0; i < 1000; i++) {
             let d = Math.floor(Math.random() * 32);
             buf.writeBits(d, 5);
@@ -180,8 +180,8 @@ describe('Buffer clear', function () {
     });
 });
 
-describe('Peak read', function () {
-    it('peak does not move', function () {
+describe('Peak read', () => {
+    it('peak does not move', () => {
         // write 0xFF00
         let buf = new BinaryRingBuffer(2);
         buf.writeBits(255, 8);
@@ -204,15 +204,15 @@ describe('Peak read', function () {
     });
 });
 
-describe('View array helper', function () {
-    it('all ones in a single byte', function () {
+describe('View array helper', () => {
+    it('all ones in a single byte', () => {
         let buf = new BinaryRingBuffer(1);
         buf.writeBits(255, 8);
         let view = buf.viewArray();
         expect(view.array).toEqual('11111111');
         expect(view.cursors).toEqual('R0000000');
     });
-    it('multiple bytes and different R/W cursors', function () {
+    it('multiple bytes and different R/W cursors', () => {
         let buf = new BinaryRingBuffer(3);
         buf.writeBits(1, 8);
         buf.writeBits(1, 8);

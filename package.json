@@ -1,10 +1,11 @@
 {
   "name": "binary-ring-buffer",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Binary Ring Buffer abstraction on top of native ArrayBuffer",
   "main": "src/BinaryRingBuffer.js",
   "scripts": {
     "test": "jasmine-node src/BinaryRingBuffer.spec.js",
+    "lint": "./node_modules/.bin/eslint 'src/*.js'",
     "cover": "node_modules/istanbul/lib/cli.js cover jasmine-node src/BinaryRingBuffer.spec.js -x '**/*.spec.js'"
   },
   "homepage": "https://github.com/joemccourt/binary-ring-buffer",
@@ -20,6 +21,11 @@
   "license": "MIT",
   "devDependencies": {
     "coveralls": "^2.11.15",
+    "eslint": "^3.10.2",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.7.1",
     "istanbul": "^0.4.5",
     "jasmine-node": "^1.14.5"
   }
