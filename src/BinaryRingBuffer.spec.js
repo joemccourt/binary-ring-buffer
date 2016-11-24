@@ -75,6 +75,15 @@ describe('Binary ring buffer reading and writing', function () {
         expect(buf.cap).toEqual(cap0);
     });
 
+    it('safety edge cases', function () {
+        let buf = new BinaryRingBuffer(1);
+        buf.writeBits(255, 8);
+        buf.writeBits(255, -4);
+        buf.readBits(6);
+        expect(buf.readBits(-12)).toEqual(0);
+        expect(buf.readBits(1324)).toEqual(3);
+    });
+
     it('wrap around does not alter written values', function () {
         let buf = new BinaryRingBuffer(1);
         buf.writeBits(0, 2);
