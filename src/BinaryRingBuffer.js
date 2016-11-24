@@ -20,6 +20,7 @@ class BinaryRingBuffer {
 
     // Current buffer size in bits
     size() {
+        if (this.writeFull) { return this.cap; }
         return (this.cap + (this.writeCursor - this.readCursor)) % this.cap;
     }
 
@@ -49,6 +50,7 @@ class BinaryRingBuffer {
     }
 
     writeBits(value, bits) {
+        if (bits <= 0) { return 0; }
         while (bits + this.size() > this.cap) {
             this.grow();
         }
@@ -102,11 +104,18 @@ class BinaryRingBuffer {
             this.writeCursor += bits;
             this.writeCursor %= this.cap;
         }
+
+        this.writeFull = this.writeCursor === this.readCursor;
     }
 
     readBits(bits, isPeak) {
+        if (bits <= 0) { return 0; }
 
-        // todo: test if reading past write
+        // clamp bits if going past write
+        if (bits > this.size()) {
+            bits = this.size();
+        }
+
         let view = new Uint8Array(this.a);
         let value = 0;
         let valueStart = 0;
@@ -152,6 +161,7 @@ class BinaryRingBuffer {
 
         if (!isPeak) {
             this.readCursor = c;
+            this.writeFull = false;
         }
 
         return valueEnd + valueMiddle * fEnd + valueStart * fStart * fEnd;
