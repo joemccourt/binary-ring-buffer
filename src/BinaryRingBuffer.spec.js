@@ -98,6 +98,13 @@ describe('Binary ring buffer reading and writing', () => {
         expect(buf.readBits(6)).toEqual(45);
     });
 
+    it('safely increases size', () => {
+        let buf = new BinaryRingBuffer(1);
+        for (let i = 0; i < 3000; i++) {
+            buf.writeBits(1, 1);
+        }
+    });
+
     it('can dynamically increase size', () => {
         let buf = new BinaryRingBuffer(1);
         buf.writeBits(0, 8 * 1024);

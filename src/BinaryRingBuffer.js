@@ -27,7 +27,6 @@ class BinaryRingBuffer {
         let newCap = this.cap * 2;
         let dstArray = new ArrayBuffer(newCap / 8);
         let srcArray = this.a;
-
         let newRead = this.readCursor % 8;
         let newWrite = this.size() + newRead;
 
@@ -45,6 +44,7 @@ class BinaryRingBuffer {
         this.cap = newCap;
         this.readCursor = newRead;
         this.writeCursor = newWrite;
+        this.writeFull = false;
     }
 
     writeBits(value, bits) {
