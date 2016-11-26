@@ -165,6 +165,30 @@ describe('Binary ring buffer reading and writing', () => {
         buf.writeBits(under64 * 0.203, 64);
         expect(buf.readBits(64)).toEqual(under64 * 0.203);
     });
+
+    it('very large int', () => {
+        let buf = new BinaryRingBuffer();
+        buf.writeBits(0, 7);
+        buf.readBits(7);
+
+        let test128 = Math.pow(2, 128) * 0.99;
+        buf.writeBits(test128, 128);
+        expect(buf.readBits(128)).toEqual(test128);
+
+        buf.writeBits(0, 3);
+        buf.readBits(3);
+
+        let test256 = Math.pow(2, 256) * 0.99;
+        buf.writeBits(test256, 256);
+        expect(buf.readBits(256)).toEqual(test256);
+
+        buf.writeBits(0, 1);
+        buf.readBits(1);
+
+        let test512 = Math.pow(2, 512) * 0.99;
+        buf.writeBits(test512, 512);
+        expect(buf.readBits(512)).toEqual(test512);
+    });
 });
 
 describe('Buffer clear', () => {
