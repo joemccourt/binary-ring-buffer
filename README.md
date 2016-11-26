@@ -26,5 +26,15 @@ console.log(buf.readBits(4)); // '9'
 ## Installation
 `npm i binary-ring-buffer`
 
-### TODO
- * Add benchmarks
+### Benchmarks
+
+You can run benchmarks yourself by running `node benchmark.js`
+
+Test | buffer | normal arrays
+------------ | ------------- | -------------
+write bit | 2,861 ops/sec | 115,299 ops/sec
+write and read bit | 1,653 ops/sec | 98,280 ops/sec
+read and write while growing | 150 ops/sec | 314 ops/sec
+write zeros | 799 ops/sec | 1,863 ops/sec
+
+I/O for ring buffer is much slower than normal arrays in most cases.  So wouldn't recommend it for high throughput tasks.  Performance might be able to be improved by batching writes using normal arrays.  The main advantage of the buffer is to use minimal memory.
