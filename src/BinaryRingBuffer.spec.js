@@ -126,7 +126,7 @@ describe('Binary ring buffer reading and writing', () => {
         }
     });
 
-    it('read 16 bit int', () => {
+    it('16 bit int', () => {
         let buf = new BinaryRingBuffer();
         buf.writeBits(0, 3);
         buf.readBits(3);
@@ -136,33 +136,34 @@ describe('Binary ring buffer reading and writing', () => {
     });
 
 
-    it('read 32 bit int', () => {
+    it('32 bit int', () => {
         let buf = new BinaryRingBuffer();
         buf.writeBits(0, 3);
         buf.readBits(3);
 
+
         buf.writeBits(Math.pow(2, 32) - 1, 32);
         expect(buf.readBits(32)).toEqual(Math.pow(2, 32) - 1);
+
+        buf.writeBits(Math.pow(2, 32) - 123456, 32);
+        expect(buf.readBits(32)).toEqual(Math.pow(2, 32) - 123456);
     });
 
-    it('read 64 bit int', () => {
+    // Note we lose precision past 53 bits but not accuracy
+    it('64 bit int', () => {
         let buf = new BinaryRingBuffer();
         buf.writeBits(0, 5);
         buf.readBits(5);
 
+        let under64 = Math.pow(2, 64) - (1 << 11);
+        buf.writeBits(under64, 64);
+        expect(buf.readBits(64)).toEqual(under64);
 
-        // TODO: support accurate writing past 53 bits
-        // buf.writeBits(Math.pow(2, 64) - 1, 64);
-        buf.writeBits(1023, 10);
-        buf.writeBits(1023, 10);
-        buf.writeBits(1023, 10);
-        buf.writeBits(1023, 10);
-        buf.writeBits(1023, 10);
-        buf.writeBits(1023, 10);
-        buf.writeBits(15, 4);
+        buf.writeBits(under64 * 0.793, 64);
+        expect(buf.readBits(64)).toEqual(under64 * 0.793);
 
-        // Note we lose precision here but not accuracy
-        expect(buf.readBits(64)).toEqual(Math.pow(2, 64));
+        buf.writeBits(under64 * 0.203, 64);
+        expect(buf.readBits(64)).toEqual(under64 * 0.203);
     });
 });
 

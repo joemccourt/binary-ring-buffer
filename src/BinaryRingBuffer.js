@@ -53,56 +53,46 @@ class BinaryRingBuffer {
             this.grow();
         }
 
-        let value0 = value;
-
-        //  * * * * * * | * * * * * * * * | * * * * * *
-        //     start    |  n full bytes   |   end
+        let c = this.writeCursor;
         let view = new Uint8Array(this.a);
 
-        // start byte
-        let offBitStart = 8 - (this.writeCursor % 8);
-        // let bitsStart = offBitStart;
-        // let bitsEnd = bitsStart >= bits ? 0 : ((bits - bitsStart) % 8);
-        // let bitsMiddle = bits - bitsStart - bitsEnd;
-        if (offBitStart < 8) {
-            let valueStart = value;
-            let bitsToWrite = 0;
-            if (offBitStart - bits > 0) {
-                // does not complete byte
-                valueStart <<= offBitStart - bits;
-                bitsToWrite = bits;
-            } else {
-                valueStart >>= bits - offBitStart;
-                bitsToWrite = offBitStart;
-            }
-            bits -= bitsToWrite;
+        // calc bit sizes to write
+        let offBitStart = 8 - (c % 8);
+        let bitsStart = offBitStart < bits ? offBitStart : bits;
+        let bitsEnd = bitsStart >= bits ? 0 : ((bits - bitsStart) % 8);
+        let bitsMiddle = bits - bitsStart - bitsEnd;
 
-            view[this.writeCursor / 8 | 0] &= (255 << offBitStart) |
-                ((1 << (offBitStart - bitsToWrite)) - 1);
-            view[this.writeCursor / 8 | 0] |= valueStart;
-            this.writeCursor += bitsToWrite;
-            this.writeCursor %= this.cap;
-            value -= valueStart * (1 << bits);
+        // end byte
+        if (bitsEnd > 0) {
+            let index = ((c + bitsStart + bitsMiddle) % this.cap) / 8;
+            view[index] &= (1 << (8 - bitsEnd)) - 1;
+            view[index] |= (value % 256) << (8 - bitsEnd);
+            value = Math.floor(value / (1 << bitsEnd));
         }
 
         // middle full bytes
-        while (bits >= 8) {
-            let byteValue = value >> (bits - 8);
-            view[this.writeCursor / 8] = byteValue;
-            bits -= 8;
-            value -= byteValue * (1 << bits);
-            this.writeCursor += 8;
-            this.writeCursor %= this.cap;
+        for (let i = 0; i < bitsMiddle; i += 8) {
+            let offset = bitsMiddle - 8 - i;
+            let index = ((c + offset + bitsStart) % this.cap) / 8;
+            view[index] = value % 256;
+            value = Math.floor(value / 256);
         }
 
-        // end byte
-        if (bits > 0) {
-            view[this.writeCursor / 8] &= (1 << (8 - bits)) - 1;
-            view[this.writeCursor / 8] |= (value0 % 256) << (8 - bits);
-            this.writeCursor += bits;
-            this.writeCursor %= this.cap;
+        // first byte
+        // if does not complete byte then shift value
+        if (offBitStart > bits) {
+            value <<= offBitStart - bits;
         }
 
+        // mask out what bits we're writing and then set
+        view[c / 8 | 0] &= (255 << offBitStart) | (255 >> ((c % 8) + bitsStart));
+        view[c / 8 | 0] |= value;
+
+        // advance cursor
+        this.writeCursor += bits;
+        this.writeCursor %= this.cap;
+
+        // set is full buffer bool
         this.writeFull = this.writeCursor === this.readCursor;
     }
 

@@ -27,7 +27,4 @@ console.log(buf.readBits(4)); // '9'
 `npm i binary-ring-buffer`
 
 ### TODO
- * Safety checks for input values
- * Clamp reading up to write position, returning padded zeros.
- * Make writeBits accurate past 53 bits
  * Add benchmarks
